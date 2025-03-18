@@ -8,24 +8,26 @@ export class GameManager{
     private pendingUsers: WebSocket[];
 
     constructor(){
-        this.games = new Map();
+        this.games = new Map();                             
         this.pendingUsers = [];
     }
 
-    public listenSocket(playerSocket : WebSocket){
+    public listenSocket(playerSocket : WebSocket){  
+
         playerSocket.on("message", (message) => {
             
             // console.log("Message recieved: ", message.toString());
 
-            const data = JSON.parse(message.toString());
+            const data = JSON.parse(message.toString()); 
 
 
             if(data.type === INIT_GAME){
-                console.log("INIT_GAME message recieved");
+                // console.log("INIT_GAME message recieved");
 
                 this.addPlayer(playerSocket);
 
             }else if(data.type === MOVE){
+                
                 const game = this.games.get(data.payload.gameId);
                 
                 if(!game){
@@ -64,7 +66,7 @@ export class GameManager{
             this.pendingUsers = [];
 
             //game board size hardcoded here, change this to make it dynamic later...
-            const newGame = new Game(players, uuidv4(), 8);
+            const newGame = new Game(players, uuidv4(), 8); // uuidv4 is used to generate unique game id here
 
             this.games.set(newGame.gameId, newGame);
         }
@@ -73,5 +75,4 @@ export class GameManager{
     public removePlayer(playerSocket : WebSocket){
         this.pendingUsers = this.pendingUsers.filter(player => player !== playerSocket);
     }
-
 }

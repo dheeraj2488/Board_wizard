@@ -7,13 +7,14 @@ import { GameManager } from "./Game/GameManager";
 dotenv.config();
 
 // const app = express();
-const PORT = 5000;
+const PORT = 8000;
 
 const wss = new WebSocketServer({ port: PORT });
 
 const gameManager = new GameManager();
 
 wss.on("connection", (ws) => {
+    
     gameManager.listenSocket(ws);
 
     ws.send("Connected to the server.");

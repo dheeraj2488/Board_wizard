@@ -4,6 +4,7 @@ import { ERROR, GAME_OVER, INIT_GAME, MOVE, PLACE_BLOCKER } from "./Events";
 import { Player } from "./Player";
 
 export class Game{
+    
     public players: Player[];
     public board: Board;
     public turnIndex: number;
@@ -21,15 +22,19 @@ export class Game{
         this.winner = null;
         
         //initialize player starting positions and targets for the given board size
-        this.startPosAndTargets = Array.from({length: 4}, () => ({start: 0, targets: [], color: ""}));
+        // we are doing this beacause in typescript it gives refernce to all other objects but i dont want that so that why initializing like this
+        this.startPosAndTargets = Array.from({length: 4}, () => ({start: 0, targets: [], color: ""})); //intitalizing with startting position and targets and color for every palyer
+        //initialize players with their starting positions and targets
+        
         this.initializeStartPosAndTargets(size);
 
-        //initialize players with their starting positions and targets
+
+        //inform players about game initialization and meta data related to them
         playerWs.forEach((socket, index) => {
             this.players.push(new Player(socket, this.startPosAndTargets[index]));
         });
 
-        //inform players about game initialization and meta data related to them
+        
         this.players.forEach(player => {
             player.socket.send(JSON.stringify({
                 type: INIT_GAME,
@@ -100,7 +105,7 @@ export class Game{
                         turn: this.players[this.turnIndex].color,
                     }
                 }));
-            }
+            }         
         });
 
         //game over conidtion
@@ -179,6 +184,7 @@ export class Game{
     }
 
     private generateTargets(start: number, end : number, d : number) : number[]{
+        // generating target according to each player 
         const targets = [];
         for(let idx = start; idx <= end; idx += d){
             targets.push(idx);
@@ -187,6 +193,9 @@ export class Game{
     }
 
     private initializeStartPosAndTargets(N: number){
+         // as the board size would always be even
+         // we can safely assume that the middle of the board would be N/2
+         // here we are initializing the starting positions and targets for each player
         this.startPosAndTargets[0].start = N / 2;
         this.startPosAndTargets[0].targets = this.generateTargets(N * (N - 1), N * N - 1, 1);
         this.startPosAndTargets[0].color = "r";
@@ -202,5 +211,6 @@ export class Game{
         this.startPosAndTargets[3].start = N * N / 2 + N - 1;
         this.startPosAndTargets[3].targets = this.generateTargets(0, N * (N - 1), N);
         this.startPosAndTargets[3].color = "y";
+
     }
 }

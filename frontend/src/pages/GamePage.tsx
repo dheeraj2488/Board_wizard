@@ -59,7 +59,7 @@ const GamePage = () => {
             setTurn(data.payload.turn);
             updatePlayerPosition(playerColor, from, to);
 
-         } else if (data.type === GAME_OVER) {
+         } else if (data.type === GAME_OVER) { 
             setWinner(data.payload.winner);
             setActive(false);
             activeRef.current = false;

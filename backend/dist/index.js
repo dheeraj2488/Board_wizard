@@ -10,7 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const GameManager_1 = require("./Game/GameManager");
 dotenv_1.default.config();
 // const app = express();
-const PORT = 5000;
+const PORT = 8000;
 const wss = new ws_1.WebSocketServer({ port: PORT });
 const gameManager = new GameManager_1.GameManager();
 wss.on("connection", (ws) => {

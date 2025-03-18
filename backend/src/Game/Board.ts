@@ -8,33 +8,35 @@ class Board {
       board?: { [key: number]: number[] },
       bridges?: { [key: number]: number[] }
    ) {
-      if (size <= 0 || size % 2 !== 0) {
-         throw new Error("Board size must be a positive even number.");
-      }
 
-      this.size = size;
-      this.adjList = Array.from(
-         { length: size * size },
-         () => new Set<number>()
-      );
-      this.bridges = Array.from(
-         { length: size * size },
-         () => new Set<number>()
-      );
-
-      if (board && bridges) {
-         for (const [node, neighbors] of Object.entries(board)) {
-            this.adjList[parseInt(node)] = new Set(neighbors);
+         if (size <= 0 || size % 2 !== 0) {
+            throw new Error("Board size must be a positive even number.");
          }
 
-         for (const [node, neighbors] of Object.entries(bridges)) {
-            this.bridges[parseInt(node)] = new Set(neighbors);
-         }
-      } else {
-         this.initializeEdges();
-      }
-   }
+         this.size = size;
+         this.adjList = Array.from(
+            { length: size * size },
+            () => new Set<number>()
+         );
 
+         this.bridges = Array.from(
+            { length: size * size },
+            () => new Set<number>()
+         );
+
+         if (board && bridges) {
+            for (const [node, neighbors] of Object.entries(board)) {
+               this.adjList[parseInt(node)] = new Set(neighbors);
+            }
+
+            for (const [node, neighbors] of Object.entries(bridges)) {
+               this.bridges[parseInt(node)] = new Set(neighbors);
+            }
+         } else {
+            this.initializeEdges();
+         }
+   }                                                           
+    // here iam initializing the edges of the board
    private initializeEdges(): void {
       for (
          let rowStart = 0;
@@ -81,7 +83,7 @@ class Board {
       }
    }
 
-   private findBridgesUtil(): void {
+   private findBridgesUtil(): void { // this function is used to find the bridges in the graph
       const n = this.size * this.size;
       const visited = new Array<boolean>(n).fill(false);
       const low = new Array<number>(n).fill(-1);
@@ -95,6 +97,7 @@ class Board {
       }
    }
 
+
    private isValidNode(node: number): boolean {
       return node >= 0 && node < this.size * this.size;
    }
@@ -107,7 +110,7 @@ class Board {
       return !this.bridges[u].has(v) && !this.bridges[v].has(u);
    }
 
-   public placeBlocker(
+   public placeBlocker( 
       blocker: {
          rmvEdge1: { from: number; to: number };
          rmvEdge2: { from: number; to: number };
@@ -144,12 +147,13 @@ class Board {
 
       this.adjList[rmvEdge2.from].delete(rmvEdge2.to);
       this.adjList[rmvEdge2.to].delete(rmvEdge2.from);
-
+      // jabh bhi valid blocker place hoga tbh tarjams chlega.. hindi
+      //pehel se islie krenge taki o(1) mai pata lg jaye..hindi
       this.findBridgesUtil();
       return true;
    }
 
-   private isValidBlocker(
+   private isValidBlocker(  // 4 dibbbe player aaas pass ke hone chiye taki valid blocker ho-- hindi
       blocker: {
          rmvEdge1: { from: number; to: number };
          rmvEdge2: { from: number; to: number };
@@ -251,6 +255,7 @@ class Board {
    }
 
    public canMove(u: number, v: number): boolean {
+
       return (
          this.isValidNode(u) &&
          this.isValidNode(v) &&
@@ -259,7 +264,7 @@ class Board {
       );
    }
 
-   public getBoardState(): {
+   public getBoardState(): { // recovery mechanism
       board: { [key: number]: number[] };
       bridges: { [key: number]: number[] };
       size: number;
@@ -277,3 +282,4 @@ class Board {
 }
 
 export default Board;
+
